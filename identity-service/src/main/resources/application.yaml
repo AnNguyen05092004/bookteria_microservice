@@ -1,0 +1,26 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /identity
+
+spring:
+  application:
+    name: identity-service
+  datasource:
+    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3307/identity_service?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true}
+    username: ${DBMS_USERNAME:root} # nếu không có biến môi trường DBMS_USERNAME thì sẽ dùng giá trị mặc định là root
+    password: ${DBMS_PASSWORD:An198205}
+    driver-class-name: "com.mysql.cj.jdbc.Driver"
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  signerKey: "1b60018ab05d0d557a8d97e1006bc1c9dd2c8a9e17d82806a4a5e76c5b6a14e6"
+  valid-duration: 3600 # in seconds token het han su dung (demo)
+  refreshable-duration: 36000 # in seconds token duoc refrsh trong ..s sau khi het han su dung
+
+app:
+  services:
+    profile: http://localhost:8081/profile
