@@ -1,5 +1,6 @@
 package com.an.profile_service.service;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.an.profile_service.dto.request.ProfileCreationRequest;
@@ -12,6 +13,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,5 +35,15 @@ public class UserProfileService {
                 userProfileRepository.findById(id).orElseThrow(() -> new RuntimeException("User profile not found"));
         UserProfileResponse userProfileResponse = userProfileMapper.toUserProfileResponse(userProfile);
         return userProfileResponse;
+    }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<UserProfileResponse> getAllProfiles() {
+        List<UserProfile> userProfiles = userProfileRepository.findAll();
+        List<UserProfileResponse> userProfileResponses = userProfiles.stream()
+                .map(userProfileMapper::toUserProfileResponse)
+                .toList();
+        return userProfileResponses;
     }
 }

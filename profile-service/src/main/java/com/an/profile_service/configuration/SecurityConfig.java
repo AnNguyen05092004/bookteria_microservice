@@ -1,5 +1,4 @@
-package com.an.identityservice.configuration;
-
+package com.an.profile_service.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -7,14 +6,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 // tham khảo trang spring security architecture
 
@@ -25,11 +19,8 @@ import org.springframework.web.filter.CorsFilter;
 public class SecurityConfig {
 
     private static final String[] PUBLIC_ENDPOINTS = {
-        "/users/registration", "/auth/login", "/auth/introspect", "/auth/logout", "/auth/refresh"
-    };
 
-    //    @Value("${jwt.signerKey}")
-    //    private String SIGNER_KEY;
+    };
 
     private final CustomJwtDecoder customJwtDecoder;
 
@@ -84,36 +75,4 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
-    @Bean
-    // Cau hình CORS để cho phép các yêu cầu từ frontend (ví dụ: http://localhost:3000) có thể truy cập vào API của
-    // backend mà không bị chặn bởi chính sách cùng nguồn (same-origin policy) của trình duyệt.
-    public CorsFilter corsFilter() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("http://localhost:3000");
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.addAllowedMethod("*");
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
-
-        return new CorsFilter(source);
-    }
-
-    //    @Bean
-    //    // Phương thức này tạo một bean JwtDecoder được cấu hình để giải mã và xác thực token JWT sử dụng thuật toán
-    // HS512 với khóa bí mật được cung cấp trong biến SIGNER_KEY
-    //        // Khi một yêu cầu đến server chứa token JWT, Spring Security sẽ sử dụng bean này để giải mã và xác thực
-    // token đó.
-    //    JwtDecoder jwtDecoder() {
-    //        SecretKeySpec secretKey = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
-    //        return NimbusJwtDecoder
-    //                .withSecretKey(secretKey)
-    //                .macAlgorithm(MacAlgorithm.HS512)
-    //                .build();
-    //    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(10);
-    }
 }

@@ -8,18 +8,22 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -32,15 +36,30 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     IdentityService identityService;
     ObjectMapper objectMapper;
 
+    @NonFinal
+    private String[] publicEndpoints = {
+            "/identity/auth/.*",
+            "/identity/users/registration" }; // những endpoint nào không cần xác thực, ví dụ login, logout, register  của service identity thì không cần xác thực token
+
+    @Value("${app.api-prefix}")
+    @NonFinal
+    private String apiPrefix;
+
     @Override
     // Mono: sẽ trả về kết quả trong tương lai
     // exchange: nơi chứa request và cả response khi trả về cho client
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         log.info("Enter AuthenticationFilter");
+
+        // check xem có nằm trong public endpoint ko
+        if (isPublicEndpoint(exchange.getRequest())){
+            return chain.filter(exchange); // tiếp tục filter tiếp
+        }
+
         // Get token from authorization header
         List<String>authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
         if(CollectionUtils.isEmpty(authHeader)){ // nếu không có thì trả 401
-            return unauthenticated(exchange.getResponse());
+            return unauthenticated(exchange.getResponse()); // getResponse để trả về cho client, hàm unauthenticated sẽ trả về response 401 Unauthenticated
         }
 
         String token = authHeader.getFirst().replace("Bearer ", "");
@@ -49,7 +68,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         // Verify token
             // Delegate to identity service
         // flatMap để xử lý kết quả bên trong Mono
-        return identityService.introspect(token).flatMap(introspectResponse ->{
+        return identityService.introspect(token).flatMap(introspectResponse ->{   // service->client(cần webclient)-> gọi sang idenServ
             if (introspectResponse.getResult().isValid())
                 return chain.filter(exchange);
             else
@@ -69,7 +88,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     Mono<Void> unauthenticated(ServerHttpResponse response) {
 
         ApiResponse<?> apiResponse = ApiResponse.builder()
-                .code(401)
+                .code(1401)
                 .message("Unauthenticated")
                 .build();
 
@@ -82,5 +101,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         response.setStatusCode(HttpStatus.UNAUTHORIZED);
         response.getHeaders().set(HttpHeaders.CONTENT_TYPE, "application/json");
         return response.writeWith(Mono.just(response.bufferFactory().wrap(body.getBytes())));
+    }
+
+    private boolean isPublicEndpoint(ServerHttpRequest request){
+        return Arrays.stream(publicEndpoints).anyMatch(endpoint -> request.getURI().getPath().matches(apiPrefix + endpoint));
     }
 }

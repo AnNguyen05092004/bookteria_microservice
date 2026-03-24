@@ -1,18 +1,16 @@
-package com.an.identityservice.configuration;
+package com.an.profile_service.configuration;
 
-import java.io.IOException;
-
+import com.an.profile_service.dto.response.ApiResponse;
+import com.an.profile_service.exception.ErrorCode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
-import com.an.identityservice.dto.response.ApiResponse;
-import com.an.identityservice.exception.ErrorCode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 
 // Khi client gọi API mà không có JWT hoặc JWT sai, Spring Security sẽ gọi class này để trả về response lỗi dạng JSON
 // Phân biệt: - chưa login -> gọi JwtAuthenticationEntryPoint để trả về lỗi Unauthenticated

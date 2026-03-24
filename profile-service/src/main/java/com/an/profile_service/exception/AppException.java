@@ -1,4 +1,6 @@
-package com.an.identityservice.exception;
+package com.an.profile_service.exception;
+
+
 
 // Custom exception class to handle application-specific errors
 public class AppException extends RuntimeException {

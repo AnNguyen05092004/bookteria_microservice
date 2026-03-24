@@ -28,6 +28,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 @RequiredArgsConstructor // Tự động tạo constructor với tất cả các trường được đánh dấu là final => không cần phải sử
@@ -67,8 +69,13 @@ public class UserService {
         }
         var profileRequest = profileMapper.toProfileCreationRequest(userCreationRequest);
         profileRequest.setUserId(user.getId());
-        var profileResponse = profileClient.createProfile(profileRequest);
 
+//        // Lấy token từ header của request hiện tại để gọi sang profile service
+//        ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+//        var authHeader = requestAttributes.getRequest().getHeader("Authorization");
+//        log.info("authHeader: {}", authHeader);
+
+        var profileResponse = profileClient.createProfile(profileRequest);
         log.info("Service: create profile response: {}", profileResponse);
 
         return userMapper.toUserResponse(user);

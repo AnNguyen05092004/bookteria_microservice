@@ -1,5 +1,6 @@
 package com.an.profile_service.controller;
 
+import com.an.profile_service.dto.response.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
 import com.an.profile_service.dto.request.ProfileCreationRequest;
@@ -8,6 +9,8 @@ import com.an.profile_service.service.UserProfileService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +24,17 @@ public class UserProfileController {
 //    }
 
     @GetMapping("/users/{profileId}")
-    UserProfileResponse getProfile(@PathVariable("profileId") String profileId) {
-        return userProfileService.getProfile(profileId);
+    ApiResponse<UserProfileResponse> getProfile(@PathVariable("profileId") String profileId) {
+        return ApiResponse.<UserProfileResponse>builder()
+                .result(userProfileService.getProfile(profileId))
+                .build();
+    }
+
+    @GetMapping("/users")
+    ApiResponse<List<UserProfileResponse>> getAllProfiles() {
+        List<UserProfileResponse> userProfileResponses = userProfileService.getAllProfiles();
+        return ApiResponse.<List<UserProfileResponse>>builder()
+                .result(userProfileResponses)
+                .build();
     }
 }
