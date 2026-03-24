@@ -3,8 +3,6 @@ package com.an.identityservice.Service;
 import java.util.HashSet;
 import java.util.List;
 
-import com.an.identityservice.mapper.ProfileMapper;
-import com.an.identityservice.repository.httpclient.ProfileClient;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,16 +10,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.an.identityservice.constant.PredefinedRole;
 import com.an.identityservice.dto.request.UserCreationRequest;
 import com.an.identityservice.dto.request.UserUpdateRequest;
 import com.an.identityservice.dto.response.UserResponse;
+import com.an.identityservice.entity.Role;
 import com.an.identityservice.entity.User;
-import com.an.identityservice.enums.Role;
 import com.an.identityservice.exception.AppException;
 import com.an.identityservice.exception.ErrorCode;
+import com.an.identityservice.mapper.ProfileMapper;
 import com.an.identityservice.mapper.UserMapper;
 import com.an.identityservice.repository.RoleRepository;
 import com.an.identityservice.repository.UserRepository;
+import com.an.identityservice.repository.httpclient.ProfileClient;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -54,9 +55,10 @@ public class UserService {
         User user = userMapper.toUser(userCreationRequest);
         user.setPassword(passwordEncoder.encode(userCreationRequest.getPassword()));
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
-        // user.setRoles(roles);
+        Role defaultUserRole = roleRepository
+                .findById(PredefinedRole.USER_ROLE)
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTS));
+        user.setRoles(new HashSet<>(List.of(defaultUserRole)));
 
         try {
             user = userRepository.save(user);
@@ -72,9 +74,8 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
-    // @PreAuthorize("hasRole('ADMIN')") // Lọc trc, Chỉ cho phép người dùng có vai trò ADMIN truy cập vào phương thức
-    // này
-    @PreAuthorize("hasAuthority('APPROVE_POST')") // Phân quyền theo permission.
+    @PreAuthorize("hasRole('ADMIN')") // Lọc trc, Chỉ cho phép người dùng có vai trò ADMIN truy cập vào phương thứcnày
+    // @PreAuthorize("hasAuthority('APPROVE_POST')") // Phân quyền theo permission.
     public List<UserResponse> getUsers() {
         log.info("Getting all users");
         return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();

@@ -1,7 +1,5 @@
 package com.an.identityservice.dto.response;
 
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.*;
@@ -13,11 +11,8 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserResponse {
-    String id;
-    String username;
-    //    String firstName;
-    //    String lastName;
-    //    LocalDate dob;
-    Set<RoleResponse> roles;
+public class ApiResponse<T> {
+    int code = 1000;
+    String message;
+    T result;
 }

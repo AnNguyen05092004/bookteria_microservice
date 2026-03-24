@@ -26,13 +26,15 @@ public class UserController {
     UserService userService;
 
     // spotless:off
-    @PostMapping
+    @PostMapping("/registration")
     // valid để đảm bảo rằng dữ liệu đầu vào phải tuân thủ các ràng buộc đã được định nghĩa trong UserCreationRequest,
     // ví dụ như độ dài mật khẩu tối thiểu.
     public ApiResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest userCreationRequest) {
         log.debug("Controller: Create User");
         ApiResponse<UserResponse> response = new ApiResponse<>();
         response.setResult(userService.createUser(userCreationRequest));
+        response.setMessage("User created");
+        response.setCode(1000);
         return response;
     }
 
