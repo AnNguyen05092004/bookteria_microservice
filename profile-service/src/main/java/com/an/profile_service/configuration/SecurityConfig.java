@@ -19,7 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private static final String[] PUBLIC_ENDPOINTS = {
-
+            "/internal/users"
     };
 
     private final CustomJwtDecoder customJwtDecoder;
@@ -34,8 +34,6 @@ public class SecurityConfig {
         // cần xác thực, trong khi yêu cầu xác thực cho tất cả các yêu cầu khác.
         http.authorizeHttpRequests(requests -> requests.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
                 .permitAll()
-                //                        .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name()) --Phân
-                // quyền theo endpoint
                 .anyRequest()
                 .authenticated());
 
