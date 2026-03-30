@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,6 +45,7 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     ProfileClient profileClient;
     ProfileMapper profileMapper;
+    KafkaTemplate<String, String> kafkaTemplate;
 
     public UserResponse createUser(UserCreationRequest userCreationRequest) {
         log.info("Service: create user");
@@ -77,6 +79,8 @@ public class UserService {
         var profileResponse = profileClient.createProfile(profileRequest);
         log.info("Service: create profile response: {}", profileResponse);
 
+        // Publish message to kafka
+        kafkaTemplate.send("onboard-successful", "Welcome our new member " + user.getUsername());
         return userMapper.toUserResponse(user);
     }
 

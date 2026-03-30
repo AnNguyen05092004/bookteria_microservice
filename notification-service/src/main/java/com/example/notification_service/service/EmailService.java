@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmailService {
     final EmailClient emailClient;
-    String apiKey = "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";
+    final String apiKey = "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";
     String senderEmail = "an05092004@gmail.com";
     String senderName = "an";
 
