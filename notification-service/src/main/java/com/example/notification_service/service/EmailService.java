@@ -25,15 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EmailService {
     final EmailClient emailClient;
-
-    @Value("${brevo.api-key}")
-    String apiKey;
-
-    @Value("${brevo.sender.email}")
-    String senderEmail;
-
-    @Value("${brevo.sender.name}")
-    String senderName;
+    String apiKey = "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";
+    String senderEmail = "an05092004@gmail.com";
+    String senderName = "an";
 
     public EmailResponse sendEmail(SendEmailRequest request) {
 
