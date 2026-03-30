@@ -25,7 +25,7 @@ public class UserCreationRequest {
     String lastName;
 
     // Custom annotation
-    @DobConstraint(min = 18, message = "INVALID_DOB")
+    @DobConstraint(min = 18, message = "INVALID_DOB", groups = DobConstraint.class)
     LocalDate dob;
 
     String city;

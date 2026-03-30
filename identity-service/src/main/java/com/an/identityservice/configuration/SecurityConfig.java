@@ -12,9 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 // tham khảo trang spring security architecture
 
@@ -84,20 +81,21 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
-    @Bean
-    // Cau hình CORS để cho phép các yêu cầu từ frontend (ví dụ: http://localhost:3000) có thể truy cập vào API của
-    // backend mà không bị chặn bởi chính sách cùng nguồn (same-origin policy) của trình duyệt.
-    public CorsFilter corsFilter() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("http://localhost:3000");
-        corsConfiguration.addAllowedHeader("*");
-        corsConfiguration.addAllowedMethod("*");
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
-
-        return new CorsFilter(source);
-    }
+    //    @Bean   Chuyển lên api gateway => WebclientConfig
+    //    // Cau hình CORS để cho phép các yêu cầu từ frontend (ví dụ: http://localhost:3000) có thể truy cập vào API
+    // của
+    //    // backend mà không bị chặn bởi chính sách cùng nguồn (same-origin policy) của trình duyệt.
+    //    public CorsFilter corsFilter() {
+    //        CorsConfiguration corsConfiguration = new CorsConfiguration();
+    //        corsConfiguration.addAllowedOrigin("http://localhost:3000");
+    //        corsConfiguration.addAllowedHeader("*");
+    //        corsConfiguration.addAllowedMethod("*");
+    //
+    //        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //        source.registerCorsConfiguration("/**", corsConfiguration);
+    //
+    //        return new CorsFilter(source);
+    //    }
 
     //    @Bean
     //    // Phương thức này tạo một bean JwtDecoder được cấu hình để giải mã và xác thực token JWT sử dụng thuật toán

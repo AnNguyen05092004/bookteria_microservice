@@ -25,5 +25,11 @@ spring:
                 - Path=${app.api-prefix}/profile/users/** # những endpoint có /internal/user... sẽ không map, ko truy cập được
               filters:
                 - StripPrefix=1 # Loại bỏ 1 /, phần /api khỏi đường dẫn khi chuyển tiếp đến profile-service
+            - id: notification_service
+              uri: http://localhost:8082
+              predicates:
+                - Path=${app.api-prefix}/notification/**
+              filters:
+                - StripPrefix=1
 
 

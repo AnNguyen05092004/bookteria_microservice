@@ -1,12 +1,13 @@
 package com.an.profile_service.configuration;
 
-import com.nimbusds.jwt.SignedJWT;
+import java.text.ParseException;
+
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
+import com.nimbusds.jwt.SignedJWT;
 
 // CustomJwtDecoder là một lớp tùy chỉnh để giải mã token JWT.
 @Component

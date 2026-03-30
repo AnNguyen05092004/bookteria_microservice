@@ -39,7 +39,8 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     @NonFinal
     private String[] publicEndpoints = {
             "/identity/auth/.*",
-            "/identity/users/registration" }; // những endpoint nào không cần xác thực, ví dụ login, logout, register  của service identity thì không cần xác thực token
+            "/identity/users/registration",
+            "/notification/email/send"}; // những endpoint nào không cần xác thực, ví dụ login, logout, register  của service identity thì không cần xác thực token
 
     @Value("${app.api-prefix}")
     @NonFinal

@@ -1,8 +1,9 @@
 package com.an.profile_service.exception;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+
+import lombok.Getter;
 
 @Getter
 // Quản lý tập trung các mã lỗi, Tránh hard-code số hoặc chuỗi
