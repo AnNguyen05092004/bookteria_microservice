@@ -18,6 +18,7 @@ public class PostResponse {
     String id;
     String content;
     String userId;
+    String createdAt; // ngày format lại
     Instant createdDate;
     Instant modifiedDate;
 }
