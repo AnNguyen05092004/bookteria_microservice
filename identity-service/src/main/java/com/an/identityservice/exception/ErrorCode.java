@@ -17,7 +17,9 @@ public enum ErrorCode {
     UNAUTHENTICATED(1007, "Authentication failed", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1008, "You do not have permission", HttpStatus.FORBIDDEN),
     INVALID_DOB(1009, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
-    ROLE_NOT_EXISTS(1010, "Role does not exist", HttpStatus.BAD_REQUEST);
+    ROLE_NOT_EXISTS(1010, "Role does not exist", HttpStatus.BAD_REQUEST),
+    INVALID_EMAIL(1011, "Invalid email address", HttpStatus.BAD_REQUEST),
+    EMAIL_IS_REQUIRED(1012, "Email is required", HttpStatus.BAD_REQUEST);
     private final int code;
     private final String message;
     private final HttpStatusCode httpStatusCode;

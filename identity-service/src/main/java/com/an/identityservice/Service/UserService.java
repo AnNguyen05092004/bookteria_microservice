@@ -2,7 +2,9 @@ package com.an.identityservice.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
+import com.an.event.dto.NotificationEvent;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -45,7 +47,7 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     ProfileClient profileClient;
     ProfileMapper profileMapper;
-    KafkaTemplate<String, String> kafkaTemplate;
+    KafkaTemplate<String, Object> kafkaTemplate;
 
     public UserResponse createUser(UserCreationRequest userCreationRequest) {
         log.info("Service: create user");
@@ -80,7 +82,15 @@ public class UserService {
         log.info("Service: create profile response: {}", profileResponse);
 
         // Publish message to kafka
-        kafkaTemplate.send("onboard-successful", "Welcome our new member " + user.getUsername());
+        // chú ý: kafka yêu cầu notificationEvent phải có chung package name ở 2 phía producer và consumer, nếu không sẽ bị lỗi serialization
+        NotificationEvent notificationEvent = NotificationEvent
+                .builder()
+                .channel("EMAIL")
+                .recipient(userCreationRequest.getEmail())
+                .subject("Welcome to our bookteria")
+                .body("Welcome our new member " + userCreationRequest.getUsername())
+                .build();
+        kafkaTemplate.send("notification-delivery", notificationEvent);
         return userMapper.toUserResponse(user);
     }
 
