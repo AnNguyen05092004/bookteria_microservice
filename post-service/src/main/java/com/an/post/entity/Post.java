@@ -1,4 +1,4 @@
-package com.devteria.post.entity;
+package com.an.post.entity;
 
 import lombok.AccessLevel;
 import lombok.Builder;

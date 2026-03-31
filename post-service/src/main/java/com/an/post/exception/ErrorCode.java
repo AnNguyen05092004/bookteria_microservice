@@ -1,4 +1,4 @@
-package com.devteria.post.exception;
+package com.an.post.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

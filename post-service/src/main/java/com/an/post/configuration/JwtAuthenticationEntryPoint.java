@@ -1,7 +1,7 @@
-package com.devteria.post.configuration;
+package com.an.post.configuration;
 
-import com.devteria.post.dto.ApiResponse;
-import com.devteria.post.exception.ErrorCode;
+import com.an.post.dto.ApiResponse;
+import com.an.post.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

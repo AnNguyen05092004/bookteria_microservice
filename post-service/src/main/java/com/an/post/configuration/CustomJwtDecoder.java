@@ -1,4 +1,4 @@
-package com.devteria.post.configuration;
+package com.an.post.configuration;
 
 import com.nimbusds.jwt.SignedJWT;
 import org.springframework.security.oauth2.jwt.Jwt;

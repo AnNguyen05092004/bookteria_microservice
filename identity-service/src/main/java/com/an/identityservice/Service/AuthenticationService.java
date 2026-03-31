@@ -153,7 +153,7 @@ public class AuthenticationService {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUsername())
+                .subject(user.getId()) // Sử dụng user id làm subject của token
                 .issuer("an-identity-service")
                 .issueTime(new Date())
                 .expirationTime(new Date(Instant.now()

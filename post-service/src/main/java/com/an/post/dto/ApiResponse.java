@@ -1,5 +1,6 @@
-package com.devteria.post.dto.request;
+package com.an.post.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,11 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PostRequest {
-    String content;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ApiResponse<T> {
+    @Builder.Default
+    private int code = 1000;
+
+    private String message;
+    private T result;
 }

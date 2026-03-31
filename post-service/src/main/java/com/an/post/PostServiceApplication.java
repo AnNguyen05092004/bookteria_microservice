@@ -1,4 +1,4 @@
-package com.devteria.post;
+package com.an.post;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

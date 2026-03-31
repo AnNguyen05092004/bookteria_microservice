@@ -1,6 +1,6 @@
-package com.devteria.post.exception;
+package com.an.post.exception;
 
-import com.devteria.post.dto.ApiResponse;
+import com.an.post.dto.ApiResponse;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

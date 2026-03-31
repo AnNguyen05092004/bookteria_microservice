@@ -1,4 +1,4 @@
-package com.devteria.post.dto.response;
+package com.an.post.dto.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import java.time.Instant;
 public class PostResponse {
     String id;
     String content;
-    String profileId;
+    String userId;
     Instant createdDate;
     Instant modifiedDate;
 }
