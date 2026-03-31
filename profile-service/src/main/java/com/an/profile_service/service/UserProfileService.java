@@ -2,6 +2,8 @@ package com.an.profile_service.service;
 
 import java.util.List;
 
+import com.an.profile_service.exception.AppException;
+import com.an.profile_service.exception.ErrorCode;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,7 @@ public class UserProfileService {
 
     public UserProfileResponse getProfile(String id) {
         UserProfile userProfile =
-                userProfileRepository.findById(id).orElseThrow(() -> new RuntimeException("User profile not found"));
+                userProfileRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTS));
         UserProfileResponse userProfileResponse = userProfileMapper.toUserProfileResponse(userProfile);
         return userProfileResponse;
     }
@@ -44,5 +46,10 @@ public class UserProfileService {
                 .map(userProfileMapper::toUserProfileResponse)
                 .toList();
         return userProfileResponses;
+    }
+
+    public UserProfileResponse getByUserId(String userId) {
+        UserProfile userProfile = userProfileRepository.findByUserId(userId);
+        return userProfileMapper.toUserProfileResponse(userProfile);
     }
 }

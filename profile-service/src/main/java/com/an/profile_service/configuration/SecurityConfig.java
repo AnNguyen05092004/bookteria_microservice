@@ -19,7 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private static final String[] PUBLIC_ENDPOINTS = {"/internal/users"};
+    private static final String[] PUBLIC_ENDPOINTS = {"/internal/users", "/internal/users/**"};
 
     private final CustomJwtDecoder customJwtDecoder;
 
@@ -31,7 +31,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // Cấu hình để cho phép tất cả các yêu cầu POST đến các endpoint được chỉ định trong PUBLIC_ENDPOINTS mà không
         // cần xác thực, trong khi yêu cầu xác thực cho tất cả các yêu cầu khác.
-        http.authorizeHttpRequests(requests -> requests.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
+        http.authorizeHttpRequests(requests -> requests.requestMatchers(PUBLIC_ENDPOINTS)
                 .permitAll()
                 .anyRequest()
                 .authenticated());

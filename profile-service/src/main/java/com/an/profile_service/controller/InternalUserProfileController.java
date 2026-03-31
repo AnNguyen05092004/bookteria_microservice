@@ -1,5 +1,6 @@
 package com.an.profile_service.controller;
 
+import com.an.profile_service.dto.response.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
 import com.an.profile_service.dto.request.ProfileCreationRequest;
@@ -16,7 +17,19 @@ public class InternalUserProfileController {
     UserProfileService userProfileService;
 
     @PostMapping("/internal/users")
-    UserProfileResponse createProfile(@RequestBody ProfileCreationRequest profileCreationRequest) {
-        return userProfileService.createProfile(profileCreationRequest);
+    ApiResponse<UserProfileResponse> createProfile(@RequestBody ProfileCreationRequest profileCreationRequest) {
+        return ApiResponse.<UserProfileResponse>builder()
+                .message("Profile created successfully")
+                .result(userProfileService.createProfile(profileCreationRequest))
+                .build();
     }
+
+    @GetMapping("/internal/users/{userId}")
+    ApiResponse<UserProfileResponse> getProfile(@PathVariable String userId) {
+        return ApiResponse.<UserProfileResponse>builder()
+                .message("Profile retrieved successfully")
+                .result(userProfileService.getByUserId(userId))
+                .build();
+    }
+
 }
