@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="PostServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <module name="post-service" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.an.post.PostServiceApplication" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.an.post.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
