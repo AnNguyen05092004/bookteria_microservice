@@ -1,32 +1,43 @@
 package com.an.file.service;
 
+import com.an.file.dto.FileInfo;
+import com.an.file.dto.response.FileResponse;
+import com.an.file.entity.FileMgmt;
+import com.an.file.mapper.FileMgmtMapper;
+import com.an.file.repository.FileMgmtRepository;
+import com.an.file.repository.FileRepository;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Objects;
-import java.util.UUID;
 
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
 public class FileService {
-    public Object uploadFile(MultipartFile file) throws IOException {
-        Path folder = Paths.get("/Users/an/IdeaProjects/bookteria/localstorage");
-        String fileExtension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+    FileRepository fileRepository;
+    FileMgmtRepository fileMgmtRepository;
+    FileMgmtMapper fileMgmtMapper;
 
-        String fileName = Objects.isNull(fileExtension)
-                ? UUID.randomUUID().toString()
-                : UUID.randomUUID().toString() + "." + fileExtension;
+    public FileResponse uploadFile(MultipartFile file) throws IOException {
+        // store file in local storage
+        FileInfo fileInfo = fileRepository.store(file);
 
-        // Tạo đường dẫn file đầy đủ
-        Path filePath = folder.resolve(fileName).normalize().toAbsolutePath();
-        // Lưu file xuống disk
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        // create file management ifo
+        FileMgmt  fileMgmt = fileMgmtMapper.toFileMgmt(fileInfo);
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        fileMgmt.setOwnerId(userId);
 
-        return null;
+        // save to mongo
+        fileMgmtRepository.save(fileMgmt);
+
+        return FileResponse.builder()
+                .originalFileName(file.getOriginalFilename())
+                .url(fileInfo.getUrl())
+                .build();
     }
 }

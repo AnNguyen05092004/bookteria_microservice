@@ -1,6 +1,7 @@
 package com.an.file.controller;
 
 import com.an.file.dto.ApiResponse;
+import com.an.file.dto.response.FileResponse;
 import com.an.file.service.FileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,8 @@ public class FileController {
     FileService fileService;
 
     @PostMapping("/media/upload")
-    ApiResponse<Object> uploadMedia(@RequestParam("file") MultipartFile file) throws IOException {
-        return ApiResponse.<Object>builder()
+    ApiResponse<FileResponse> uploadMedia(@RequestParam("file") MultipartFile file) throws IOException {
+        return ApiResponse.<FileResponse>builder()
                 .message("File uploaded successfully")
                 .result(fileService.uploadFile(file))
                 .build();
