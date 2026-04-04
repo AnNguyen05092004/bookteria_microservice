@@ -1,6 +1,4 @@
-package com.an.profile_service.dto.response;
-
-import java.time.LocalDate;
+package com.an.profile_service.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,15 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class UserProfileResponse {
-    String id;
-    String username;
-    String avatar;
+public class UpdateProfileRequest {
     String email;
     String firstName;
     String lastName;

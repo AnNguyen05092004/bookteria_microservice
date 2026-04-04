@@ -15,6 +15,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ProfileCreationRequest {
     String userId;
+    String username;
+    String email;
     String firstName;
     String lastName;
     LocalDate dob;

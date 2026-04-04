@@ -112,6 +112,17 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-neo4j</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.github.openfeign.form/feign-form-spring -->
+		<!-- depen này dể cho việc gửi multipart/form-data qua feign client, vì profile service có chức năng upload avatar -->
+		<dependency>
+			<groupId>io.github.openfeign.form</groupId>
+			<artifactId>feign-form-spring</artifactId>
+			<version>3.8.0</version>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
