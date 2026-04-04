@@ -1,12 +1,16 @@
 package com.an.file.repository;
 
 import com.an.file.dto.FileInfo;
+import com.an.file.entity.FileMgmt;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -46,5 +50,11 @@ public class FileRepository {
                 .path(filePath.toString())
                 .url(urlPrefix + fileName)
                 .build();
+    }
+
+    // ĐỌc file
+    public Resource read(FileMgmt fileMgmt) throws IOException {
+        var data = Files.readAllBytes(Path.of(fileMgmt.getPath()));
+        return new ByteArrayResource(data);
     }
 }
