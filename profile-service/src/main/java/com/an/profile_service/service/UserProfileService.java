@@ -3,6 +3,7 @@ package com.an.profile_service.service;
 import java.io.IOException;
 import java.util.List;
 
+import com.an.profile_service.dto.request.SearchUserRequest;
 import com.an.profile_service.dto.request.UpdateProfileRequest;
 import com.an.profile_service.exception.AppException;
 import com.an.profile_service.exception.ErrorCode;
@@ -87,5 +88,14 @@ public class UserProfileService {
         // get url and save to user profile
         userProfile.setAvatar(response.getResult().getUrl());
         return userProfileMapper.toUserProfileResponse(userProfileRepository.save(userProfile));
+    }
+
+    public List<UserProfileResponse> searchUsers(SearchUserRequest request) {
+        var userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<UserProfile> userProfiles = userProfileRepository.findAllByUsernameLike(request.getKeyword());
+        return userProfiles.stream()
+                .filter(userProfile -> !userProfile.getUserId().equals(userId))
+                .map(userProfileMapper::toUserProfileResponse)
+                .toList();
     }
 }

@@ -3,6 +3,7 @@ package com.an.profile_service.controller;
 import java.io.IOException;
 import java.util.List;
 
+import com.an.profile_service.dto.request.SearchUserRequest;
 import com.an.profile_service.dto.request.UpdateProfileRequest;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +59,13 @@ public class UserProfileController {
     ApiResponse<UserProfileResponse> updateAvatar(@RequestParam("file") MultipartFile file) throws IOException {
         return ApiResponse.<UserProfileResponse>builder()
                 .result(userProfileService.updateAvatar(file))
+                .build();
+    }
+
+    @GetMapping("/users/search")
+    ApiResponse<List<UserProfileResponse>> searchUsers(@RequestBody SearchUserRequest request){
+        return ApiResponse.builder()
+                .result(userProfileService.searchUsers(request))
                 .build();
     }
 }
