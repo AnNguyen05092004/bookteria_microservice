@@ -17,6 +17,7 @@ import com.an.chat.mapper.ChatMessageMapper;
 import com.an.chat.repository.ChatMessageRepository;
 import com.an.chat.repository.ConversationRepository;
 import com.an.chat.repository.httpclient.ProfileClient;
+import com.corundumstudio.socketio.SocketIOServer;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,8 @@ public class ChatMessageService {
     ProfileClient profileClient;
 
     ChatMessageMapper chatMessageMapper;
+
+    SocketIOServer socketIOServer;
 
     public List<ChatMessageResponse> getMessages(String conversationId) {
         // validate conversation
@@ -85,6 +88,12 @@ public class ChatMessageService {
 
         // create chat message
         chatMessage = chatMessageRepository.save(chatMessage); // gán ngược lại để có thêm id
+
+        // publish socket event to client
+        String message = chatMessage.getMessage();
+        socketIOServer.getAllClients().forEach(client -> {
+            client.sendEvent("message", message);
+        });
 
         // convert to response
         return toChatMessageResponse(chatMessage);
