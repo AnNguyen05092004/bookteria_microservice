@@ -11,6 +11,6 @@ import com.an.chat.entity.Conversation;
 public interface ConversationRepository extends MongoRepository<Conversation, String> {
     Optional<Conversation> findByParticipantsHash(String hash);
 
-    @Query("{'participants.userId' : ?0}")
+    @Query("{'participants.userId' : ?0}") //  để list các conversation chứa userID đó
     List<Conversation> findAllByParticipantIdsContains(String userId);
 }

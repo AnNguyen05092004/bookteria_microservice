@@ -63,32 +63,39 @@ public class ConversationService {
         var sortedIds = userIds.stream().sorted().toList();
         String userIdHase = generateParticipantHash(sortedIds);
 
-        // Tạo list participant info tham gia vào đoạn chat
-        List<ParticipantInfo> participantInfos = List.of(
-                ParticipantInfo.builder()
-                        .userId(userInfor.getUserId())
-                        .username(userInfor.getUsername())
-                        .firstName(userInfor.getFirstName())
-                        .lastName(userInfor.getLastName())
-                        .avatar(userInfor.getAvatar())
-                        .build(),
-                ParticipantInfo.builder()
-                        .userId(participantInfor.getUserId())
-                        .username(participantInfor.getUsername())
-                        .firstName(participantInfor.getFirstName())
-                        .lastName(participantInfor.getLastName())
-                        .avatar(participantInfor.getAvatar())
-                        .build());
+        // kiểm tra xem chat đã tồn tại chưa, nếu đã tồn tại thì trả về luôn, không tạo mới
+        var conversation = conversationRepository
+                .findByParticipantsHash(userIdHase)
+                .orElseGet(() -> {
+                    // Tạo mới conversation
+                    // Tạo list participant info tham gia vào đoạn chat
+                    List<ParticipantInfo> participantInfos = List.of(
+                            ParticipantInfo.builder()
+                                    .userId(userInfor.getUserId())
+                                    .username(userInfor.getUsername())
+                                    .firstName(userInfor.getFirstName())
+                                    .lastName(userInfor.getLastName())
+                                    .avatar(userInfor.getAvatar())
+                                    .build(),
+                            ParticipantInfo.builder()
+                                    .userId(participantInfor.getUserId())
+                                    .username(participantInfor.getUsername())
+                                    .firstName(participantInfor.getFirstName())
+                                    .lastName(participantInfor.getLastName())
+                                    .avatar(participantInfor.getAvatar())
+                                    .build());
 
-        // Build conversation
-        Conversation conversation = Conversation.builder()
-                .type(request.getType())
-                .participantsHash(userIdHase)
-                .createdDate(Instant.now())
-                .modifiedDate(Instant.now())
-                .participants(participantInfos)
-                .build();
-        conversation = conversationRepository.save(conversation);
+                    // Build conversation
+                    Conversation newConversation = Conversation.builder()
+                            .type(request.getType())
+                            .participantsHash(userIdHase)
+                            .createdDate(Instant.now())
+                            .modifiedDate(Instant.now())
+                            .participants(participantInfos)
+                            .build();
+                    return conversationRepository.save(newConversation);
+                });
+
         return toConversationResponse(conversation);
     }
 
