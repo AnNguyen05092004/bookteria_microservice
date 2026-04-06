@@ -1,13 +1,14 @@
 package com.an.chat.entity;
 
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import java.time.Instant;
+import java.util.List;
+
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.time.Instant;
-import java.util.List;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Setter
 @Getter
@@ -23,9 +24,10 @@ public class Conversation {
     String type; // GROUP, DIRECT
 
     @Indexed(unique = true)
-    String participantsHash;
+    String participantsHash; // đảm bảo chỉ có 1 conversation giữa 2 người
 
-    List<ParticipantInfo> participants;
+    List<ParticipantInfo>
+            participants; // embeded vào để đọc nhanh hơn, nhưng cần cập nhật khi có thay đổi thông tin người dùng
 
     Instant createdDate;
 

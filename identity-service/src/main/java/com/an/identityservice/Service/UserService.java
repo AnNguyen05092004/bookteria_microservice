@@ -2,9 +2,7 @@ package com.an.identityservice.Service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 
-import com.an.event.dto.NotificationEvent;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -13,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.an.event.dto.NotificationEvent;
 import com.an.identityservice.constant.PredefinedRole;
 import com.an.identityservice.dto.request.UserCreationRequest;
 import com.an.identityservice.dto.request.UserUpdateRequest;
@@ -82,9 +81,9 @@ public class UserService {
         log.info("Service: create profile response: {}", profileResponse);
 
         // Publish message to kafka
-        // chú ý: kafka yêu cầu notificationEvent phải có chung package name ở 2 phía producer và consumer, nếu không sẽ bị lỗi serialization
-        NotificationEvent notificationEvent = NotificationEvent
-                .builder()
+        // chú ý: kafka yêu cầu notificationEvent phải có chung package name ở 2 phía producer và consumer, nếu không sẽ
+        // bị lỗi serialization
+        NotificationEvent notificationEvent = NotificationEvent.builder()
                 .channel("EMAIL")
                 .recipient(userCreationRequest.getEmail())
                 .subject("Welcome to our bookteria")

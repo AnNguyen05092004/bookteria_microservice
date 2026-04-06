@@ -51,8 +51,10 @@ export default function Login() {
       console.log("Response body:", response.data);
       navigate("/");
     } catch (error) {
-      const errorResponse = error.response.data;
-      setSnackBarMessage(errorResponse.message);
+      const errorResponse = error.response?.data;
+      setSnackBarMessage(
+        errorResponse?.message || "Login request failed. Check API gateway and services."
+      );
       setSnackBarOpen(true);
     }
   };
@@ -126,7 +128,6 @@ export default function Login() {
                 variant="contained"
                 color="primary"
                 size="large"
-                onClick={handleSubmit}
                 fullWidth
                 sx={{
                   mt: "15px",

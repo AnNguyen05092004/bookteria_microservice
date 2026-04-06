@@ -1,6 +1,5 @@
 package com.an.notification_service.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +11,7 @@ import com.an.notification_service.service.EmailService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +28,4 @@ public class EmailController {
                 .result(emailService.sendEmail(sendEmailRequest))
                 .build();
     }
-
-
 }

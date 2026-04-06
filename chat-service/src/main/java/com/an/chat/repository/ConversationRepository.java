@@ -1,11 +1,12 @@
 package com.an.chat.repository;
 
-import com.an.chat.entity.Conversation;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
-import java.util.List;
-import java.util.Optional;
+import com.an.chat.entity.Conversation;
 
 public interface ConversationRepository extends MongoRepository<Conversation, String> {
     Optional<Conversation> findByParticipantsHash(String hash);

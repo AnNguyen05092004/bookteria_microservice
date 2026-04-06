@@ -1,9 +1,9 @@
 package com.an.profile_service.controller;
 
-import com.an.profile_service.dto.response.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
 import com.an.profile_service.dto.request.ProfileCreationRequest;
+import com.an.profile_service.dto.response.ApiResponse;
 import com.an.profile_service.dto.response.UserProfileResponse;
 import com.an.profile_service.service.UserProfileService;
 
@@ -31,5 +31,4 @@ public class InternalUserProfileController {
                 .result(userProfileService.getByUserId(userId))
                 .build();
     }
-
 }

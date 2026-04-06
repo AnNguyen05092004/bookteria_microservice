@@ -1,17 +1,19 @@
 package com.an.chat.controller;
 
-import com.an.chat.dto.ApiResponse;
+import java.util.List;
 
+import jakarta.validation.Valid;
+
+import org.springframework.web.bind.annotation.*;
+
+import com.an.chat.dto.ApiResponse;
 import com.an.chat.dto.request.ConversationRequest;
 import com.an.chat.dto.response.ConversationResponse;
 import com.an.chat.service.ConversationService;
-import jakarta.validation.Valid;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

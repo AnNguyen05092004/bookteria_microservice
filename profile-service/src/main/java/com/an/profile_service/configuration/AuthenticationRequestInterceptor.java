@@ -1,16 +1,18 @@
 package com.an.profile_service.configuration;
 
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Slf4j
 // @Component (Global) // khi khai báo bean, openFeign sẽ tự động tìm kiếm tất cả các bean implement interface
 // RequestInterceptor và sử dụng chúng để thêm header vào request khi gọi sang service khác
 // ==> Nên config cho từng client
-// class này sẽ lấy header Authorization từ request hiện tại và thêm nó vào request khi gọi sang service khác, giúp duy trì thông tin xác thực khi gọi giữa các service với nhau.
+// class này sẽ lấy header Authorization từ request hiện tại và thêm nó vào request khi gọi sang service khác, giúp duy
+// trì thông tin xác thực khi gọi giữa các service với nhau.
 public class AuthenticationRequestInterceptor implements RequestInterceptor {
 
     @Override

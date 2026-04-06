@@ -1,9 +1,9 @@
 export const CONFIG = {
-  API_GATEWAY: "http://localhost:8888/api/v1",
+  API_GATEWAY: "http://localhost:8888/api",
 };
 
 export const API = {
-  LOGIN: "/identity/auth/token",
+  LOGIN: "/identity/auth/login",
   MY_INFO: "/profile/users/my-profile",
   MY_POST: "/post/my-posts",
   CREATE_POST: "/post/create",
