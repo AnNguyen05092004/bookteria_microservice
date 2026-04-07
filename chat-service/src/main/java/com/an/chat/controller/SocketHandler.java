@@ -1,5 +1,8 @@
 package com.an.chat.controller;
 
+import com.an.chat.dto.request.IntrospectRequest;
+import com.an.chat.dto.response.IntrospectResponse;
+import com.an.chat.service.IdentityService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
@@ -23,10 +26,24 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SocketHandler {
     SocketIOServer server;
+    IdentityService identityService;
 
     @OnConnect
     public void clientConnected(SocketIOClient socketIOClient) {
-        log.info("Client connected: " + socketIOClient.getSessionId());
+        // Get token from request param
+        String token = socketIOClient.getHandshakeData().getSingleUrlParam("token");
+
+        // verify token
+        IntrospectResponse introspectResponse = identityService.introspect(IntrospectRequest.builder().token(token).build());
+
+        // disconnect if token is invalid
+        if (introspectResponse.isValid()){
+            log.info("Client connected: " + socketIOClient.getSessionId());
+        } else {
+            log.info("Authentication fail " + socketIOClient.getSessionId());
+            socketIOClient.disconnect();
+        }
+
     }
 
     @OnDisconnect
