@@ -2,8 +2,16 @@ package com.an.chat.service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import com.an.chat.entity.WebSocketSession;
+import com.an.chat.repository.WebSocketSessionRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +40,10 @@ public class ChatMessageService {
     ChatMessageRepository chatMessageRepository;
     ConversationRepository conversationRepository;
     ProfileClient profileClient;
-
     ChatMessageMapper chatMessageMapper;
-
     SocketIOServer socketIOServer;
+    WebSocketSessionRepository webSocketSessionRepository;
+    ObjectMapper objectMapper; // để chuyển từ object sang json
 
     public List<ChatMessageResponse> getMessages(String conversationId) {
         // validate conversation
@@ -56,7 +64,7 @@ public class ChatMessageService {
         return messages.stream().map(this::toChatMessageResponse).toList();
     }
 
-    public ChatMessageResponse create(ChatMessageRequest request) {
+    public ChatMessageResponse create(ChatMessageRequest request) throws JsonProcessingException {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
         // validate conversation exists
         var consersation = conversationRepository
@@ -89,10 +97,33 @@ public class ChatMessageService {
         // create chat message
         chatMessage = chatMessageRepository.save(chatMessage); // gán ngược lại để có thêm id
 
-        // publish socket event to client
-        String message = chatMessage.getMessage();
+        // publish socket event to client in that conversation
+        // Get participants userId
+        List<String> userIds = consersation.getParticipants().stream().map(ParticipantInfo::getUserId).toList();
+       // String message = objectMapper.writeValueAsString(chatMessage); // chuyển chatMessage sang json để gửi qua socket
+
+        // Lấy ra các socketssesion trong conversation đó
+        Map<String, WebSocketSession> webSocketSessions =
+                webSocketSessionRepository
+                        .findAllByUserIdIn(userIds).stream()
+                        .collect(Collectors.toMap(
+                                WebSocketSession::getSocketSessionId,
+                                Function.identity()));
+
+        ChatMessageResponse chatMessageResponse = chatMessageMapper.toChatMessageResponse(chatMessage);
         socketIOServer.getAllClients().forEach(client -> {
-            client.sendEvent("message", message);
+            var webSocketSession = webSocketSessions.get(client.getSessionId().toString());
+
+            if (Objects.nonNull(webSocketSession)) {
+                String message = null;
+                try {
+                    chatMessageResponse.setMe(webSocketSession.getUserId().equals(userId));
+                    message = objectMapper.writeValueAsString(chatMessageResponse);
+                    client.sendEvent("message", message);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         });
 
         // convert to response

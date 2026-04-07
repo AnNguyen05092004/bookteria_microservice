@@ -2,7 +2,9 @@ package com.an.chat.controller;
 
 import com.an.chat.dto.request.IntrospectRequest;
 import com.an.chat.dto.response.IntrospectResponse;
+import com.an.chat.entity.WebSocketSession;
 import com.an.chat.service.IdentityService;
+import com.an.chat.service.WebSocketSessionService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
@@ -18,6 +20,8 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.Instant;
+
 // Class này để quản lý lifecycle của SocketIOServer, start server khi ứng dụng khởi động và stop server khi ứng dụng
 // tắt
 @Component
@@ -27,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SocketHandler {
     SocketIOServer server;
     IdentityService identityService;
+    WebSocketSessionService webSocketSessionService;
 
     @OnConnect
     public void clientConnected(SocketIOClient socketIOClient) {
@@ -39,6 +44,18 @@ public class SocketHandler {
         // disconnect if token is invalid
         if (introspectResponse.isValid()){
             log.info("Client connected: " + socketIOClient.getSessionId());
+
+            // persist websocket session
+            WebSocketSession webSocketSession = WebSocketSession.builder()
+                    .socketSessionId(socketIOClient.getSessionId().toString())
+                    .userId(introspectResponse.getUserId())
+                    .createdAt(Instant.now())
+                    .build();
+
+            webSocketSession = webSocketSessionService.createWebSocketSession(webSocketSession);
+
+            log.info("WebSocket session created: " + webSocketSession.getId());
+
         } else {
             log.info("Authentication fail " + socketIOClient.getSessionId());
             socketIOClient.disconnect();
@@ -49,6 +66,7 @@ public class SocketHandler {
     @OnDisconnect
     public void clientDisconnected(SocketIOClient socketIOClient) {
         log.info("Client disconnected: " + socketIOClient.getSessionId());
+        webSocketSessionService.deleteSocketSession(socketIOClient.getSessionId().toString());
     }
 
     // start socket server sau khi đã inject bean
